@@ -16,10 +16,6 @@ struct DiaryEntryRow: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 4) {
-                    Label(entry.date, formatter: DateFormatter.diaryShort, systemImage: "clock")
-                    Label(entry.location, systemImage: "mappin")
-                }
-                .labelStyle(.iconOnly)
             }
 
             Text(entry.highlight)
@@ -53,19 +49,6 @@ struct DiaryEntryRow: View {
                 .fill(Color.white)
                 .shadow(color: Color.black.opacity(0.06), radius: 18, x: 0, y: 12)
         )
-    }
-}
-
-private extension Label where Title == Text, Icon == Image {
-    init(_ date: Date, formatter: DateFormatter, systemImage: String) {
-        self.init {
-            Text(formatter.string(from: date))
-                .font(.caption)
-                .foregroundStyle(Color.diaryTextSecondary)
-        } icon: {
-            Image(systemName: systemImage)
-                .foregroundStyle(Color.diaryAccent)
-        }
     }
 }
 
