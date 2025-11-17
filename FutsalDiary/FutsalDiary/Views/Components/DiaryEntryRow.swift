@@ -16,24 +16,6 @@ struct DiaryEntryRow: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 4) {
-                    Label {
-                        Text(DateFormatter.diaryShort.string(from: entry.date))
-                            .font(.caption)
-                            .foregroundStyle(Color.diaryTextSecondary)
-                    } icon: {
-                        Image(systemName: "clock")
-                            .foregroundStyle(Color.diaryAccent)
-                    }
-
-                    Label {
-                        Text(entry.location)
-                            .font(.caption)
-                            .foregroundStyle(Color.diaryTextSecondary)
-                    } icon: {
-                        Image(systemName: "mappin")
-                            .foregroundStyle(Color.diaryAccent)
-                    }
-                }
             }
 
             Text(entry.highlight)
