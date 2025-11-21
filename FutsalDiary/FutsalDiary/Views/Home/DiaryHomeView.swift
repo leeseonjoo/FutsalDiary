@@ -170,11 +170,12 @@ private extension Label where Title == Text, Icon == Image {
                 .foregroundStyle(Color.diaryTextSecondary)
                 .font(.subheadline)
         } icon: {
-            Image(systemName: systemImage)
-                .foregroundStyle(Color.diaryAccent)
+            Image(systemName: systemImage)   // 순수 Image
         }
     }
 }
+
+
 
 private extension DateFormatter {
     static let eventDate: DateFormatter = {

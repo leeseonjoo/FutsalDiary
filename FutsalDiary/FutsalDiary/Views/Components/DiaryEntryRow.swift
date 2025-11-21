@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DiaryEntryRow: View {
     let entry: DiaryEntry
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top) {
@@ -16,47 +16,48 @@ struct DiaryEntryRow: View {
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 4) {
-            }
-
-            Text(entry.highlight)
-                .font(.callout)
-                .foregroundStyle(Color.diaryTextSecondary)
-
-            HStack {
-                ForEach(entry.tags, id: \.self) { tag in
-                    Text(tag)
-                        .font(.caption)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(Color.diaryBackground, in: Capsule())
                 }
-                Spacer()
-                HStack(spacing: 6) {
-                    Image(systemName: entry.mood.icon)
-                    Text(entry.mood.rawValue)
+                
+                Text(entry.highlight)
+                    .font(.callout)
+                    .foregroundStyle(Color.diaryTextSecondary)
+                
+                HStack {
+                    ForEach(entry.tags, id: \.self) { tag in
+                        Text(tag)
+                            .font(.caption)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(Color.diaryBackground, in: Capsule())
+                    }
+                    Spacer()
+                    HStack(spacing: 6) {
+                        Image(systemName: entry.mood.icon)
+                        Text(entry.mood.rawValue)
+                    }
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.diaryTextSecondary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(entry.mood.gradient)
+                    .clipShape(Capsule())
                 }
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(Color.diaryTextSecondary)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(entry.mood.gradient)
-                .clipShape(Capsule())
             }
+            .padding(20)
+            .background(
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(Color.white)
+                    .shadow(color: Color.black.opacity(0.06), radius: 18, x: 0, y: 12)
+            )
         }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Color.white)
-                .shadow(color: Color.black.opacity(0.06), radius: 18, x: 0, y: 12)
-        )
     }
 }
-
 private extension DateFormatter {
-    static let diaryShort: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M.d a h시"
-        return formatter
-    }()
-}
+        static let diaryShort: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "ko_KR")
+            formatter.dateFormat = "M.d a h시"
+            return formatter
+        }()
+    }
+
