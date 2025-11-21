@@ -2,7 +2,6 @@ import SwiftUI
 import UIKit
 
 struct MainHomeView: View {
-    enum Tab: Hashable { case analysis, tactics, write, feed, theme }
 
     init() {
         let appearance = UITabBarAppearance()
@@ -49,7 +48,7 @@ struct MainHomeView: View {
                         Text("작성")
                     }
                     .tag(Tab.write)
-
+              
                 FeedView()
                     .tabItem {
                         Text("피드")
@@ -188,7 +187,7 @@ private struct AnalysisHomeView: View {
 
     var body: some View {
         ZStack {
-            Image("background_1")
+            Image("background_6")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
@@ -321,6 +320,14 @@ private struct AnalysisHomeView: View {
 private struct TacticsView: View {
     var body: some View {
         Text("전술 화면 (준비중)")
+            .font(.title3)
+            .foregroundColor(.gray)
+    }
+}
+
+private struct WriteView: View {
+    var body: some View {
+        Text("작성 화면 (준비중)")
             .font(.title3)
             .foregroundColor(.gray)
     }
