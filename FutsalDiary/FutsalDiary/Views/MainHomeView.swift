@@ -117,7 +117,7 @@ struct MainHomeView: View {
 
     var body: some View {
         ZStack {
-            Image("background_3")
+            Image("background_1")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
@@ -217,7 +217,7 @@ struct MainHomeView: View {
             ("운동", "\(workoutCount)일"),
             ("일지", "\(diaryCount)개"),
             ("남은 일수", "\(remainingWorkoutDays)일"),
-            ("스트릭", "\(streakCount)일 연속")
+            ("연속", "\(streakCount)일 연속")
         ]
 
         return HStack(spacing: 12) {
