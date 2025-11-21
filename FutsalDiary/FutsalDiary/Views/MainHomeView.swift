@@ -1,7 +1,29 @@
 import SwiftUI
+import UIKit
 
 struct MainHomeView: View {
     enum Tab { case analysis, tactics, feed, theme }
+
+    init() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor.black.withAlphaComponent(0.25)
+
+        let normalAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.white.withAlphaComponent(0.8)]
+        let selectedAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.white]
+
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = normalAttributes
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = selectedAttributes
+        appearance.inlineLayoutAppearance = appearance.stackedLayoutAppearance
+        appearance.compactInlineLayoutAppearance = appearance.stackedLayoutAppearance
+
+        UITabBar.appearance().standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            UITabBar.appearance().scrollEdgeAppearance = appearance
+        }
+
+        UITabBar.appearance().unselectedItemTintColor = UIColor.white.withAlphaComponent(0.8)
+    }
 
     @State private var selectedTab: Tab = .analysis
 
@@ -9,29 +31,29 @@ struct MainHomeView: View {
         TabView(selection: $selectedTab) {
             AnalysisHomeView()
                 .tabItem {
-                    Label("분석", systemImage: "chart.line.uptrend.xyaxis")
+                    Text("분석")
                 }
                 .tag(Tab.analysis)
 
             TacticsView()
                 .tabItem {
-                    Label("전술", systemImage: "lightbulb")
+                    Text("전술")
                 }
                 .tag(Tab.tactics)
 
             FeedView()
                 .tabItem {
-                    Label("피드", systemImage: "bubble.left.and.bubble.right")
+                    Text("피드")
                 }
                 .tag(Tab.feed)
 
             ThemeView()
                 .tabItem {
-                    Label("테마", systemImage: "paintbrush")
+                    Text("테마")
                 }
                 .tag(Tab.theme)
         }
-        .accentColor(.blue)
+        .tint(.white)
     }
 }
 
