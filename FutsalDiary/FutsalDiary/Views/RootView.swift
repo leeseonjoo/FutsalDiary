@@ -4,7 +4,12 @@ import SwiftUI
 /// and a welcome message until real screens are wired up.
 struct RootView: View {
     var body: some View {
-        BackgroundContainerView {
+        NavigationStack {
+            BackgroundContainerView {
+                VStack(spacing: 12) {
+                    Text("Futsal Diary")
+                        .font(.system(size: 32, weight: .heavy))
+                        .foregroundStyle(.white)
             ZStack {
                 // 🔥 배경 이미지 추가
                 Image("background_4")
