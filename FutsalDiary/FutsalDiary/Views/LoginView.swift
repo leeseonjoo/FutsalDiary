@@ -6,7 +6,8 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            Image("Background_4")
+            // ⬇️ 새 배경 이미지
+            Image("background_5")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
