@@ -1,0 +1,2 @@
+# Ignore local background image binary to avoid committing assets
+Assets.xcassets/Background.imageset/background.png
