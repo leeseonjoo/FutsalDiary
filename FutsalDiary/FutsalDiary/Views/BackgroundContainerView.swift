@@ -7,7 +7,7 @@ struct BackgroundContainerView<Content: View>: View {
 
     var body: some View {
         ZStack {
-            Image("Background")
+            Image("Background_4")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
