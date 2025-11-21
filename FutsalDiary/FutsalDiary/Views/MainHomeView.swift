@@ -1,17 +1,47 @@
 import SwiftUI
 
 struct MainHomeView: View {
-    enum TabType {
-        case schedule
-        case diary
+    enum Tab { case analysis, tactics, feed, theme }
 
-        var title: String {
-            switch self {
-            case .schedule:
-                "일정 등록"
-            case .diary:
-                "일지 작성"
-            }
+    @State private var selectedTab: Tab = .analysis
+
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            AnalysisHomeView()
+                .tabItem {
+                    Label("분석", systemImage: "chart.line.uptrend.xyaxis")
+                }
+                .tag(Tab.analysis)
+
+            TacticsView()
+                .tabItem {
+                    Label("전술", systemImage: "lightbulb")
+                }
+                .tag(Tab.tactics)
+
+            FeedView()
+                .tabItem {
+                    Label("피드", systemImage: "bubble.left.and.bubble.right")
+                }
+                .tag(Tab.feed)
+
+            ThemeView()
+                .tabItem {
+                    Label("테마", systemImage: "paintbrush")
+                }
+                .tag(Tab.theme)
+        }
+        .accentColor(.blue)
+    }
+}
+
+private struct AnalysisHomeView: View {
+    enum TabType { case schedule, diary }
+
+    private var tabTitle: (TabType) -> String = { tab in
+        switch tab {
+        case .schedule: return "일정 등록"
+        case .diary: return "일지 작성"
         }
     }
 
@@ -34,9 +64,7 @@ struct MainHomeView: View {
         calendar.range(of: .day, in: .month, for: startOfMonth)?.count ?? 30
     }
 
-    private var weekdaySymbols: [String] {
-        ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]
-    }
+    private var weekdaySymbols: [String] { ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] }
 
     private struct Day: Identifiable {
         let id = UUID()
@@ -94,9 +122,7 @@ struct MainHomeView: View {
     private var workoutCount: Int { workoutDates.count }
     private var diaryCount: Int { diaryDates.count }
     private var targetWorkoutDays: Int { 24 }
-    private var remainingWorkoutDays: Int {
-        max(targetWorkoutDays - workoutCount, 0)
-    }
+    private var remainingWorkoutDays: Int { max(targetWorkoutDays - workoutCount, 0) }
 
     private var streakCount: Int {
         let today = calendar.startOfDay(for: Date())
@@ -202,7 +228,7 @@ struct MainHomeView: View {
         Button {
             selectedTab = tab
         } label: {
-            Text(tab.title)
+            Text(tabTitle(tab))
                 .font(.system(size: 15, weight: .semibold))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
@@ -244,6 +270,30 @@ struct MainHomeView: View {
         .background(Color.gray.opacity(0.3))
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 4)
+    }
+}
+
+private struct TacticsView: View {
+    var body: some View {
+        Text("전술 화면 (준비중)")
+            .font(.title3)
+            .foregroundColor(.gray)
+    }
+}
+
+private struct FeedView: View {
+    var body: some View {
+        Text("피드 화면 (준비중)")
+            .font(.title3)
+            .foregroundColor(.gray)
+    }
+}
+
+private struct ThemeView: View {
+    var body: some View {
+        Text("테마 화면 (준비중)")
+            .font(.title3)
+            .foregroundColor(.gray)
     }
 }
 
