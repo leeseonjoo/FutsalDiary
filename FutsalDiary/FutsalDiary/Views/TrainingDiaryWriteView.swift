@@ -17,22 +17,24 @@ struct TrainingDiaryWriteView: View {
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            VStack(alignment: .leading, spacing: 24) {
-                headerSection
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    headerSection
 
-                VStack(alignment: .leading, spacing: 12) {
-                    titleField
-                    contentField
+                    VStack(alignment: .leading, spacing: 12) {
+                        titleField
+                        contentField
+                    }
+
+                    HStack {
+                        Spacer()
+                        tagToolbar
+                    }
                 }
-
-                Spacer()
-
-                tagToolbar
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 24)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 24)
-            .padding(.top, 28)
-            .padding(.bottom, 28)
         }
     }
 
