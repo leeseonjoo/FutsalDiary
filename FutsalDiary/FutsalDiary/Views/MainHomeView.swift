@@ -29,58 +29,61 @@ struct MainHomeView: View {
     }
 
     @State private var selectedTab: Tab = .analysis
-    @State private var navigationPath = NavigationPath()
+    @State private var lastNonWriteTab: Tab = .analysis
+    @State private var isPresentingWriteView = false
 
     var body: some View {
-        NavigationStack(path: $navigationPath) {
-            TabView(selection: $selectedTab) {
-                AnalysisHomeView()
-                    .tabItem {
-                        Text("분석")
-                    }
-                    .tag(Tab.analysis)
-
-                Color.clear
-                    .tabItem {
-                        Text("전술")
-                    }
-                    .tag(Tab.tactics)
-
-                Color.clear
-                    .tabItem {
-                        Image(systemName: "pencil")
-                        Text("작성")
-                    }
-                    .tag(Tab.write)
-              
-                FeedView()
-                    .tabItem {
-                        Text("피드")
-                    }
-                    .tag(Tab.feed)
-
-                ThemeView()
-                    .tabItem {
-                        Text("테마")
-                    }
-                    .tag(Tab.theme)
-            }
-            .tint(.white)
-            .onChange(of: selectedTab) { newValue in
-                switch newValue {
-                case .tactics, .write:
-                    navigationPath.append(newValue)
-                default:
-                    break
+        TabView(selection: $selectedTab) {
+            AnalysisHomeView()
+                .tabItem {
+                    Text("분석")
                 }
-            }
-            .navigationDestination(for: Tab.self) { tab in
-                switch tab {
-                case .tactics, .write:
-                    TrainingDiaryWriteView()
-                default:
-                    EmptyView()
+                .tag(Tab.analysis)
+
+            Color.clear
+                .tabItem {
+                    Text("전술")
                 }
+                .tag(Tab.tactics)
+
+            Color.clear
+                .tabItem {
+                    Image(systemName: isPresentingWriteView ? "xmark.circle.fill" : "pencil.circle.fill")
+                    Text(isPresentingWriteView ? "닫기" : "작성")
+                }
+                .tag(Tab.write)
+
+            FeedView()
+                .tabItem {
+                    Text("피드")
+                }
+                .tag(Tab.feed)
+
+            ThemeView()
+                .tabItem {
+                    Text("테마")
+                }
+                .tag(Tab.theme)
+        }
+        .tint(.white)
+        .onChange(of: selectedTab) { newValue in
+            if newValue == .write {
+                if isPresentingWriteView {
+                    isPresentingWriteView = false
+                } else {
+                    isPresentingWriteView = true
+                }
+
+                selectedTab = lastNonWriteTab
+            } else {
+                lastNonWriteTab = newValue
+            }
+        }
+        .sheet(isPresented: $isPresentingWriteView, onDismiss: {
+            selectedTab = lastNonWriteTab
+        }) {
+            TrainingDiaryWriteView {
+                isPresentingWriteView = false
             }
         }
     }
