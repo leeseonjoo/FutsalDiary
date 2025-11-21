@@ -17,7 +17,7 @@ struct TrainingDiaryWriteView: View {
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 24) {
                 headerSection
 
                 VStack(alignment: .leading, spacing: 12) {
@@ -29,9 +29,10 @@ struct TrainingDiaryWriteView: View {
 
                 tagToolbar
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 32)
-            .padding(.bottom, 24)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 24)
+            .padding(.top, 28)
+            .padding(.bottom, 28)
         }
     }
 
@@ -40,6 +41,7 @@ struct TrainingDiaryWriteView: View {
             Text(formattedDate)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
+                .lineLimit(1)
 
             Spacer()
 
@@ -65,13 +67,18 @@ struct TrainingDiaryWriteView: View {
     private var titleField: some View {
         TextField("제목", text: $title)
             .font(.headline)
-            .padding(.horizontal, 14)
+            .padding(.horizontal, 16)
             .padding(.vertical, 12)
-            .foregroundStyle(.white)
-            .background(.black.opacity(0.35), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .foregroundStyle(.primary)
+            .multilineTextAlignment(.leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color.white)
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .strokeBorder(Color.white.opacity(0.35), lineWidth: 1)
+                    .strokeBorder(Color.primary.opacity(0.12), lineWidth: 1)
             )
     }
 
@@ -79,52 +86,55 @@ struct TrainingDiaryWriteView: View {
         ZStack(alignment: .topLeading) {
             if content.isEmpty {
                 Text("훈련 내용을 입력하세요...")
-                    .foregroundStyle(Color.white.opacity(0.7))
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 14)
+                    .foregroundStyle(Color.secondary)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 16)
+                    .multilineTextAlignment(.leading)
             }
 
             TextEditor(text: $content)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
                 .font(.body)
-                .padding(8)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .multilineTextAlignment(.leading)
                 .scrollContentBackground(.hidden)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 260)
-        .background(.black.opacity(0.3), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.white)
+        )
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .strokeBorder(Color.white.opacity(0.25), lineWidth: 1)
+                .strokeBorder(Color.primary.opacity(0.12), lineWidth: 1)
         )
     }
 
     private var tagToolbar: some View {
-        HStack(spacing: 16) {
-            tagItem(icon: "tag", title: "태그")
-            tagItem(icon: "folder", title: "폴더")
-            tagItem(icon: "person.2", title: "사람")
+        VStack(spacing: 16) {
+            tagIcon("tag")
+            tagIcon("folder")
+            tagIcon("person.2")
         }
-        .padding(12)
-        .background(.ultraThinMaterial, in: Capsule())
+        .padding(.vertical, 16)
+        .padding(.horizontal, 12)
+        .background(.ultraThinMaterial, in: Capsule(style: .continuous))
         .overlay(
-            Capsule()
+            Capsule(style: .continuous)
                 .stroke(Color.white.opacity(0.25), lineWidth: 1)
         )
         .foregroundStyle(.white)
     }
 
-    private func tagItem(icon: String, title: String) -> some View {
+    private func tagIcon(_ icon: String) -> some View {
         Button(action: {}) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.system(size: 14, weight: .semibold))
-                Text(title)
-                    .font(.system(size: 14, weight: .semibold))
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background(Color.white.opacity(0.12), in: Capsule())
+            Image(systemName: icon)
+                .font(.system(size: 16, weight: .semibold))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color.white.opacity(0.14), in: Capsule())
         }
         .buttonStyle(.plain)
     }
