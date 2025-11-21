@@ -12,31 +12,43 @@ struct TrainingDiaryWriteView: View {
 
     var body: some View {
         ZStack {
-            Image("background_7")
+            // 배경
+            Image("background_3")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    headerSection
+            // 실제 내용
+            VStack(spacing: 16) {
+                // 상단 헤더 고정
+                headerSection
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
 
-                    VStack(alignment: .leading, spacing: 12) {
+                // 본문은 스크롤
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
                         titleField
                         contentField
                     }
-
-                    HStack {
-                        Spacer()
-                        tagToolbar
-                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .padding(.bottom, 80) // 아래 아이콘/탭바와 겹치지 않게
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
-                .padding(.bottom, 24)
             }
         }
+        // 하단 왼쪽에 태그/폴더/사람 아이콘, 탭바 위에 고정
+        .safeAreaInset(edge: .bottom) {
+            HStack {
+                tagToolbar   // ⬅️ 왼쪽
+                Spacer()
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)
+        }
     }
+
+    // MARK: - Subviews
 
     private var headerSection: some View {
         HStack {
@@ -61,87 +73,71 @@ struct TrainingDiaryWriteView: View {
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(.white)
                 .padding(10)
-                .background(.ultraThinMaterial, in: Circle())
+                .background(.ultraThickMaterial, in: Circle())
         }
         .buttonStyle(.plain)
     }
 
+    // 제목 필드: 배경 투명, 글자 흰색
     private var titleField: some View {
-        TextField("제목", text: $title)
-            .font(.headline)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .foregroundStyle(.primary)
-            .multilineTextAlignment(.leading)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color.white)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .strokeBorder(Color.primary.opacity(0.12), lineWidth: 1)
-            )
+        TextField(
+            "",
+            text: $title,
+            prompt: Text("제목").foregroundColor(.white.opacity(0.7))
+        )
+        .font(.headline)
+        .padding(.horizontal, 4)
+        .padding(.vertical, 4)
+        .foregroundStyle(Color.white)                   // 텍스트 흰색
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.clear)                        // 배경 완전 투명
     }
 
+    // 내용 필드: 배경 투명, 글자 흰색
     private var contentField: some View {
         ZStack(alignment: .topLeading) {
             if content.isEmpty {
                 Text("훈련 내용을 입력하세요...")
-                    .foregroundStyle(Color.secondary)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 16)
-                    .multilineTextAlignment(.leading)
+                    .foregroundColor(.white.opacity(0.7)) // 흰색 계열 placeholder
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 8)
             }
 
             TextEditor(text: $content)
-                .foregroundStyle(.primary)
+                .foregroundColor(.white)                // 입력 텍스트 흰색
                 .font(.body)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-                .multilineTextAlignment(.leading)
+                .padding(.horizontal, 0)
+                .padding(.vertical, 0)
                 .scrollContentBackground(.hidden)
+                .multilineTextAlignment(.leading)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 260)
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color.white)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .strokeBorder(Color.primary.opacity(0.12), lineWidth: 1)
-        )
+        .background(Color.clear)                        // 배경 완전 투명
     }
 
+    // 태그/폴더/사람 아이콘: 배경 박스 제거, 아이콘만
     private var tagToolbar: some View {
         VStack(spacing: 16) {
             tagIcon("tag")
             tagIcon("folder")
             tagIcon("person.2")
         }
-        .padding(.vertical, 16)
-        .padding(.horizontal, 12)
-        .background(.ultraThinMaterial, in: Capsule(style: .continuous))
-        .overlay(
-            Capsule(style: .continuous)
-                .stroke(Color.white.opacity(0.25), lineWidth: 1)
-        )
+        // 둘러싼 캡슐/박스 제거 → 완전 투명
         .foregroundStyle(.white)
     }
 
     private func tagIcon(_ icon: String) -> some View {
         Button(action: {}) {
             Image(systemName: icon)
-                .font(.system(size: 16, weight: .semibold))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(Color.white.opacity(0.14), in: Capsule())
+                .font(.system(size: 18, weight: .semibold))
         }
         .buttonStyle(.plain)
     }
 }
 
 #Preview {
-    TrainingDiaryWriteView()
+    NavigationStack {
+        TrainingDiaryWriteView()
+    }
 }
