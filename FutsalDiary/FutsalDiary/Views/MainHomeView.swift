@@ -1,6 +1,10 @@
 import SwiftUI
 import UIKit
 
+enum Tab: Hashable {
+    case analysis, tactics, write, feed, theme
+}
+
 struct MainHomeView: View {
 
     init() {
@@ -36,7 +40,7 @@ struct MainHomeView: View {
                     }
                     .tag(Tab.analysis)
 
-                TacticsView()
+                Color.clear
                     .tabItem {
                         Text("전술")
                     }
@@ -63,13 +67,16 @@ struct MainHomeView: View {
             }
             .tint(.white)
             .onChange(of: selectedTab) { newValue in
-                if newValue == .write {
-                    navigationPath.append(Tab.write)
+                switch newValue {
+                case .tactics, .write:
+                    navigationPath.append(newValue)
+                default:
+                    break
                 }
             }
             .navigationDestination(for: Tab.self) { tab in
                 switch tab {
-                case .write:
+                case .tactics, .write:
                     TrainingDiaryWriteView()
                 default:
                     EmptyView()
