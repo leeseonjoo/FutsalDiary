@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct TrainingDiaryWriteView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var onClose: (() -> Void)? = nil
+
     @State private var title: String = ""
     @State private var content: String = ""
 
@@ -63,12 +67,15 @@ struct TrainingDiaryWriteView: View {
                 headerIcon(name: "square.and.arrow.up")
                 headerIcon(name: "eye")
                 headerIcon(name: "doc.on.doc")
+                headerIcon(name: "xmark") {
+                    close()
+                }
             }
         }
     }
 
-    private func headerIcon(name: String) -> some View {
-        Button(action: {}) {
+    private func headerIcon(name: String, action: (() -> Void)? = nil) -> some View {
+        Button(action: { action?() }) {
             Image(systemName: name)
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(.white)
@@ -76,6 +83,11 @@ struct TrainingDiaryWriteView: View {
                 .background(.ultraThickMaterial, in: Circle())
         }
         .buttonStyle(.plain)
+    }
+
+    private func close() {
+        onClose?()
+        dismiss()
     }
 
     // 제목 필드: 배경 투명, 글자 흰색
