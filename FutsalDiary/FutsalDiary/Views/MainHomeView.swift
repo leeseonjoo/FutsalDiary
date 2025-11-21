@@ -2,7 +2,6 @@ import SwiftUI
 import UIKit
 
 struct MainHomeView: View {
-    enum Tab { case analysis, tactics, write, feed, theme }
 
     init() {
         let appearance = UITabBarAppearance()
@@ -26,40 +25,57 @@ struct MainHomeView: View {
     }
 
     @State private var selectedTab: Tab = .analysis
+    @State private var navigationPath = NavigationPath()
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            AnalysisHomeView()
-                .tabItem {
-                    Text("분석")
-                }
-                .tag(Tab.analysis)
+        NavigationStack(path: $navigationPath) {
+            TabView(selection: $selectedTab) {
+                AnalysisHomeView()
+                    .tabItem {
+                        Text("분석")
+                    }
+                    .tag(Tab.analysis)
 
-            TacticsView()
-                .tabItem {
-                    Text("전술")
-                }
-                .tag(Tab.tactics)
-            
-            WriteView()
-                .tabItem {
-                    Text("작성")
-                }
-                .tag(Tab.write)
-            
-            FeedView()
-                .tabItem {
-                    Text("피드")
-                }
-                .tag(Tab.feed)
+                TacticsView()
+                    .tabItem {
+                        Text("전술")
+                    }
+                    .tag(Tab.tactics)
 
-            ThemeView()
-                .tabItem {
-                    Text("테마")
+                Color.clear
+                    .tabItem {
+                        Image(systemName: "pencil")
+                        Text("작성")
+                    }
+                    .tag(Tab.write)
+              
+                FeedView()
+                    .tabItem {
+                        Text("피드")
+                    }
+                    .tag(Tab.feed)
+
+                ThemeView()
+                    .tabItem {
+                        Text("테마")
+                    }
+                    .tag(Tab.theme)
+            }
+            .tint(.white)
+            .onChange(of: selectedTab) { newValue in
+                if newValue == .write {
+                    navigationPath.append(Tab.write)
                 }
-                .tag(Tab.theme)
+            }
+            .navigationDestination(for: Tab.self) { tab in
+                switch tab {
+                case .write:
+                    TrainingDiaryWriteView()
+                default:
+                    EmptyView()
+                }
+            }
         }
-        .tint(.white)
     }
 }
 
