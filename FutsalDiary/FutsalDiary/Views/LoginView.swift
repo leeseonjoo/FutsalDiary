@@ -6,7 +6,6 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            // ⬇️ 새 배경 이미지
             Image("background_5")
                 .resizable()
                 .scaledToFill()
@@ -35,7 +34,9 @@ struct LoginView: View {
                 }
 
                 HStack(spacing: 16) {
-                    Button(action: {}) {
+                    Button(action: {
+                        // TODO: 나중에 실제 로그인 로직 넣기
+                    }) {
                         Text("로그인")
                             .frame(maxWidth: .infinity)
                     }
@@ -45,7 +46,9 @@ struct LoginView: View {
                     .controlSize(.large)
                     .frame(maxWidth: 140)
 
-                    Button(action: {}) {
+                    Button(action: {
+                        // TODO: 회원가입 화면으로 이동
+                    }) {
                         Text("회원가입")
                             .frame(maxWidth: .infinity)
                     }
@@ -55,6 +58,17 @@ struct LoginView: View {
                     .controlSize(.large)
                     .frame(maxWidth: 140)
                 }
+
+                // ⬇️ 테스트용 관리자 모드 진입 버튼
+                NavigationLink {
+                    MainHomeView()
+                } label: {
+                    Text("관리자 모드로 홈 화면 열기 (테스트용)")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.8))
+                        .underline()
+                }
+                .padding(.top, 8)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
@@ -63,5 +77,7 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView()
+    NavigationStack {
+        LoginView()
+    }
 }
