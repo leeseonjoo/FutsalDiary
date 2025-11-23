@@ -1,11 +1,6 @@
 import SwiftUI
 import UIKit
 
-// ✅ 전역 탭 enum 이름을 MainTab 으로 변경
-enum MainTab: Hashable {
-    case analysis, note, write, feed, theme
-}
-
 struct MainHomeView: View {
 
     init() {
