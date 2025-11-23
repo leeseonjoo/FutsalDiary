@@ -38,16 +38,17 @@ struct MainHomeView: View {
             AnalysisHomeView()
                 .tabItem { Text("분석") }
                 .tag(Tab.analysis)
-            
+
             // 2) 노트
-            TacticsView()
+            NoteTabView()
                 .tabItem { Text("노트") }
                 .tag(Tab.note)
             
             // 3) 작성 탭 → TrainingDiaryWriteView 를 직접 보여주는 방식
             TrainingDiaryWriteView(
                 onClose: {
-                    selectedTab = lastNonWriteTab
+                    selectedTab = .note
+                    lastNonWriteTab = .note
                 }
             )
             .tabItem {
