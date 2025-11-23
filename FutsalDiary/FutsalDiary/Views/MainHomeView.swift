@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 enum Tab: Hashable {
-    case analysis, tactics, write, feed, theme
+    case analysis, note, write, feed, theme
 }
 
 struct MainHomeView: View {
@@ -85,8 +85,6 @@ struct MainHomeView: View {
             }
         }
     }
-}
-
 
 private struct AnalysisHomeView: View {
     enum TabType { case schedule, diary }
@@ -359,5 +357,5 @@ private struct ThemeView: View {
 }
 
 #Preview {
-    MainHomeView()
-}
+        MainHomeView()
+    }
