@@ -151,7 +151,6 @@ struct TrainingDiaryWriteView: View {
         }
         .buttonStyle(.plain)
     }
-}
 
 #Preview {
     // 미리보기용 더미 바인딩
