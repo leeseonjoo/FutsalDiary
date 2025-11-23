@@ -1,10 +1,9 @@
 import SwiftUI
 
 struct TrainingDiaryWriteView: View {
-    @Environment(\.dismiss) private var dismiss
-
+    // 닫기 눌렀을 때 실행할 콜백 (MainHomeView에서 주입)
     var onClose: (() -> Void)? = nil
-
+    
     @State private var title: String = ""
     @State private var content: String = ""
 
@@ -64,18 +63,16 @@ struct TrainingDiaryWriteView: View {
             Spacer()
 
             HStack(spacing: 16) {
-                headerIcon(name: "square.and.arrow.up")
-                headerIcon(name: "eye")
-                headerIcon(name: "doc.on.doc")
-                headerIcon(name: "xmark") {
-                    close()
-                }
+                headerIcon(name: "square.and.arrow.up")  // 공유
+                headerIcon(name: "eye")                 // 보기
+                headerIcon(name: "doc.on.doc")          // 복사
             }
         }
     }
 
-    private func headerIcon(name: String, action: (() -> Void)? = nil) -> some View {
-        Button(action: { action?() }) {
+
+    private func headerIcon(name: String) -> some View {
+        Button(action: {}) {
             Image(systemName: name)
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(.white)
@@ -83,11 +80,6 @@ struct TrainingDiaryWriteView: View {
                 .background(.ultraThickMaterial, in: Circle())
         }
         .buttonStyle(.plain)
-    }
-
-    private func close() {
-        onClose?()
-        dismiss()
     }
 
     // 제목 필드: 배경 투명, 글자 흰색
@@ -135,7 +127,6 @@ struct TrainingDiaryWriteView: View {
             tagIcon("folder")
             tagIcon("person.2")
         }
-        // 둘러싼 캡슐/박스 제거 → 완전 투명
         .foregroundStyle(.white)
     }
 
@@ -149,7 +140,5 @@ struct TrainingDiaryWriteView: View {
 }
 
 #Preview {
-    NavigationStack {
-        TrainingDiaryWriteView()
-    }
+    MainHomeView()
 }

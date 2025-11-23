@@ -6,88 +6,87 @@ enum Tab: Hashable {
 }
 
 struct MainHomeView: View {
-
+    
     init() {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor.black.withAlphaComponent(0.25)
-
+        
         let normalAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.white.withAlphaComponent(0.8)]
         let selectedAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.white]
-
+        
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = normalAttributes
         appearance.stackedLayoutAppearance.selected.titleTextAttributes = selectedAttributes
         appearance.inlineLayoutAppearance = appearance.stackedLayoutAppearance
         appearance.compactInlineLayoutAppearance = appearance.stackedLayoutAppearance
-
+        
         UITabBar.appearance().standardAppearance = appearance
         if #available(iOS 15.0, *) {
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }
-
+        
         UITabBar.appearance().unselectedItemTintColor = UIColor.white.withAlphaComponent(0.8)
     }
-
+    
     @State private var selectedTab: Tab = .analysis
     @State private var lastNonWriteTab: Tab = .analysis
-    @State private var isPresentingWriteView = false
-
+    
     var body: some View {
         TabView(selection: $selectedTab) {
+            
+            // 1) 분석
             AnalysisHomeView()
-                .tabItem {
-                    Text("분석")
-                }
+                .tabItem { Text("분석") }
                 .tag(Tab.analysis)
-
-            Color.clear
-                .tabItem {
-                    Text("전술")
-                }
+            
+            // 2) 노트
+            TacticsView()
+                .tabItem { Text("노트") }
                 .tag(Tab.tactics)
-
-            Color.clear
-                .tabItem {
-                    Image(systemName: isPresentingWriteView ? "xmark.circle.fill" : "pencil.circle.fill")
-                    Text(isPresentingWriteView ? "닫기" : "작성")
+            
+            // 3) 작성 탭 → TrainingDiaryWriteView 를 직접 보여주는 방식
+            TrainingDiaryWriteView(
+                onClose: {
+                    selectedTab = lastNonWriteTab
                 }
-                .tag(Tab.write)
-
+            )
+            .tabItem {
+                VStack {
+                    Image(systemName: selectedTab == .write ? "xmark.circle.fill" : "pencil.circle.fill")
+                    Text(selectedTab == .write ? "닫기" : "작성")
+                }
+            }
+            .tag(Tab.write)
+            
+            // 4) 피드
             FeedView()
-                .tabItem {
-                    Text("피드")
-                }
+                .tabItem { Text("피드") }
                 .tag(Tab.feed)
-
+            
+            // 5) 테마
             ThemeView()
-                .tabItem {
-                    Text("테마")
-                }
+                .tabItem { Text("테마") }
                 .tag(Tab.theme)
         }
         .tint(.white)
         .onChange(of: selectedTab) { newValue in
+            // 작성 탭 눌렀을 때 동작
             if newValue == .write {
-                if isPresentingWriteView {
-                    isPresentingWriteView = false
-                } else {
-                    isPresentingWriteView = true
+                
+                if selectedTab == .write && lastNonWriteTab == .analysis {
+                    // 이미 작성 화면 상태에서 중앙 탭(닫기)을 다시 누른 경우
+                    // → 메인홈(analysis)로 이동
+                    selectedTab = .analysis
                 }
-
-                selectedTab = lastNonWriteTab
+                
             } else {
+                // 작성 탭 이외 선택 시 기록
                 lastNonWriteTab = newValue
-            }
-        }
-        .sheet(isPresented: $isPresentingWriteView, onDismiss: {
-            selectedTab = lastNonWriteTab
-        }) {
-            TrainingDiaryWriteView {
-                isPresentingWriteView = false
             }
         }
     }
 }
+
 
 private struct AnalysisHomeView: View {
     enum TabType { case schedule, diary }
@@ -329,7 +328,7 @@ private struct AnalysisHomeView: View {
 
 private struct TacticsView: View {
     var body: some View {
-        Text("전술 화면 (준비중)")
+        Text("노트 화면 (준비중)")
             .font(.title3)
             .foregroundColor(.gray)
     }
