@@ -48,17 +48,21 @@ struct NoteTabView: View {
 
     var body: some View {
         ZStack {
+            // 🔵 전술(분석) 탭과 동일하게, 배경이 화면 전체+탭바까지 깔리도록
             Image("background_6")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            VStack(spacing: 12) {
+            VStack(spacing: 14) {
                 searchBar
                 folderSelector
                 noteList
             }
-            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .padding(.top, 24)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 8)   // 탭바 영역과 조금 띄우기
         }
         .alert("폴더 추가", isPresented: $isPresentingFolderAlert) {
             TextField("폴더명", text: $folderNameInput)
@@ -72,10 +76,12 @@ struct NoteTabView: View {
         }
     }
 
+    // MARK: - 검색 바
+
     private var searchBar: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(.white.opacity(0.8))
+                .foregroundColor(.white.opacity(0.85))
 
             TextField("검색", text: $searchText)
                 .textFieldStyle(.plain)
@@ -84,9 +90,11 @@ struct NoteTabView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(Color.white.opacity(0.14))
+        .background(Color.white.opacity(0.18))
         .cornerRadius(12)
     }
+
+    // MARK: - 폴더 선택 영역
 
     private var folderSelector: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -114,7 +122,7 @@ struct NoteTabView: View {
                     }
                     .padding(.vertical, 10)
                     .padding(.horizontal, 14)
-                    .background(Color.white.opacity(0.14))
+                    .background(Color.white.opacity(0.18))
                     .cornerRadius(12)
                     .foregroundColor(.white)
                 }
@@ -130,7 +138,7 @@ struct NoteTabView: View {
         } label: {
             HStack(spacing: 8) {
                 Circle()
-                    .fill(folder?.color ?? .white.opacity(0.6))
+                    .fill(folder?.color ?? .white.opacity(0.7))
                     .frame(width: 10, height: 10)
                 Text(name)
                     .font(.subheadline.weight(.semibold))
@@ -139,16 +147,19 @@ struct NoteTabView: View {
             .padding(.horizontal, 14)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(color.opacity(isSelected ? 0.8 : 0.5))
+                    .fill(color.opacity(isSelected ? 0.9 : 0.55))
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.white.opacity(isSelected ? 0.9 : 0.3), lineWidth: isSelected ? 1.5 : 1)
+                            .stroke(Color.white.opacity(isSelected ? 0.95 : 0.3),
+                                    lineWidth: isSelected ? 1.5 : 1)
                     )
             )
             .foregroundColor(.white)
         }
         .buttonStyle(.plain)
     }
+
+    // MARK: - 노트 리스트
 
     private var noteList: some View {
         ScrollView {
@@ -166,6 +177,9 @@ struct NoteTabView: View {
                             }
                         }
                 }
+
+                // 🔸 맨 아래가 탭바에 가려지지 않도록 여유
+                Spacer().frame(height: 40)
             }
             .padding(.vertical, 4)
         }
@@ -179,39 +193,43 @@ struct NoteTabView: View {
 
             Text(String(note.content.prefix(120)))
                 .font(.subheadline)
-                .foregroundColor(.white.opacity(0.85))
+                .foregroundColor(.white.opacity(0.9))
                 .lineLimit(2)
 
             HStack {
                 Text(dateFormatter.string(from: note.createdAt))
+
                 Spacer()
+
                 if let folder = folders.first(where: { $0.id == note.folderId }) {
                     Label(folder.name, systemImage: "folder.fill")
                         .labelStyle(.titleAndIcon)
                         .font(.caption)
-                        .foregroundColor(.white.opacity(0.9))
+                        .foregroundColor(.white.opacity(0.95))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 6)
-                        .background(folder.color.opacity(0.8))
+                        .background(folder.color.opacity(0.9))
                         .cornerRadius(10)
                 } else {
                     Label("전체", systemImage: "tray.full")
                         .font(.caption)
-                        .foregroundColor(.white.opacity(0.85))
+                        .foregroundColor(.white.opacity(0.9))
                 }
             }
             .font(.caption)
-            .foregroundColor(.white.opacity(0.8))
+            .foregroundColor(.white.opacity(0.85))
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.black.opacity(0.25))
+        .background(Color.black.opacity(0.28))
         .cornerRadius(16)
         .overlay(
             RoundedRectangle(cornerRadius: 16)
                 .stroke(Color.white.opacity(0.15), lineWidth: 1)
         )
     }
+
+    // MARK: - 동작
 
     private func move(note: Note, to folderId: UUID?) {
         guard let index = notes.firstIndex(where: { $0.id == note.id }) else { return }
@@ -249,10 +267,13 @@ struct NoteTabView: View {
     }
 }
 
+// MARK: - 기본 데이터
+
 private extension NoteTabView {
     static var defaultFolders: [NoteFolder] {
         [
-            NoteFolder(id: UUID(), name: "기본 폴더", color: Color(red: 0.76, green: 0.86, blue: 0.96))
+            NoteFolder(id: UUID(), name: "기본 폴더",
+                       color: Color(red: 0.76, green: 0.86, blue: 0.96))
         ]
     }
 

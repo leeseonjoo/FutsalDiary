@@ -16,7 +16,7 @@ struct TrainingDiaryWriteView: View {
     var body: some View {
         ZStack {
             // 배경
-            Image("background_3")
+            Image("background_5")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()

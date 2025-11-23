@@ -9,11 +9,22 @@ struct MainHomeView: View {
     
     init() {
         let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor.black.withAlphaComponent(0.25)
+        // 🔹 박스 배경 없애고 투명하게
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = .clear
         
-        let normalAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.white.withAlphaComponent(0.8)]
-        let selectedAttributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.white]
+        // 🔹 탭 글자 폰트/색 설정 (조금 크게)
+        let normalFont   = UIFont.systemFont(ofSize: 14, weight: .medium)
+        let selectedFont = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        
+        let normalAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.white.withAlphaComponent(0.8),
+            .font: normalFont
+        ]
+        let selectedAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.white,
+            .font: selectedFont
+        ]
         
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = normalAttributes
         appearance.stackedLayoutAppearance.selected.titleTextAttributes = selectedAttributes
@@ -26,6 +37,8 @@ struct MainHomeView: View {
         }
         
         UITabBar.appearance().unselectedItemTintColor = UIColor.white.withAlphaComponent(0.8)
+        UITabBar.appearance().isTranslucent = true
+        UITabBar.appearance().backgroundColor = .clear
     }
     
     @State private var selectedTab: Tab = .analysis
@@ -52,10 +65,8 @@ struct MainHomeView: View {
                 }
             )
             .tabItem {
-                VStack {
-                    Image(systemName: selectedTab == .write ? "xmark.circle.fill" : "pencil.circle.fill")
-                    Text(selectedTab == .write ? "닫기" : "작성")
-                }
+                // 🔹 아이콘 제거, 텍스트만
+                Text(selectedTab == .write ? "닫기" : "작성")
             }
             .tag(Tab.write)
             
@@ -71,22 +82,16 @@ struct MainHomeView: View {
         }
         .tint(.white)
         .onChange(of: selectedTab) { newValue in
-            // 작성 탭 눌렀을 때 동작
             if newValue == .write {
-                
-                if selectedTab == .write && lastNonWriteTab == .analysis {
-                    // 이미 작성 화면 상태에서 중앙 탭(닫기)을 다시 누른 경우
-                    // → 메인홈(analysis)로 이동
-                    selectedTab = .analysis
-                }
-                
+                // 작성 탭 눌렀을 때 추가 토글 로직이 필요하면 여기서 더 다듬으면 됨
             } else {
-                // 작성 탭 이외 선택 시 기록
+                // 작성 탭이 아닌 탭 선택 시, 마지막 탭 기록
                 lastNonWriteTab = newValue
             }
         }
     }
     
+    // MARK: - 분석 탭 뷰
     private struct AnalysisHomeView: View {
         enum TabType { case schedule, diary }
         
@@ -131,7 +136,11 @@ struct MainHomeView: View {
             var days: [Day] = []
             
             for offset in 0..<leadingEmptyDays {
-                if let placeholderDate = calendar.date(byAdding: .day, value: -(leadingEmptyDays - offset), to: startOfMonth) {
+                if let placeholderDate = calendar.date(
+                    byAdding: .day,
+                    value: -(leadingEmptyDays - offset),
+                    to: startOfMonth
+                ) {
                     days.append(Day(date: placeholderDate, isCurrentMonth: false))
                 }
             }
@@ -356,8 +365,8 @@ struct MainHomeView: View {
                 .foregroundColor(.gray)
         }
     }
-    
-    #Preview {
-        MainHomeView()
-    }
+}
+
+#Preview {
+    MainHomeView()
 }
