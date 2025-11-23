@@ -2,7 +2,7 @@ import SwiftUI
 import UIKit
 
 enum Tab: Hashable {
-    case analysis, tactics, write, feed, theme
+    case analysis, note, write, feed, theme
 }
 
 struct MainHomeView: View {
@@ -40,11 +40,11 @@ struct MainHomeView: View {
                 }
                 .tag(Tab.analysis)
 
-            Color.clear
+            NoteTabView()
                 .tabItem {
-                    Text("전술")
+                    Text("노트")
                 }
-                .tag(Tab.tactics)
+                .tag(Tab.note)
 
             Color.clear
                 .tabItem {
@@ -80,9 +80,10 @@ struct MainHomeView: View {
             }
         }
         .sheet(isPresented: $isPresentingWriteView, onDismiss: {
-            selectedTab = lastNonWriteTab
+            selectedTab = .note
         }) {
             TrainingDiaryWriteView {
+                selectedTab = .note
                 isPresentingWriteView = false
             }
         }
