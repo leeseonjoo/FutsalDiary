@@ -2,28 +2,28 @@ import SwiftUI
 
 struct TrainingDiaryWriteView: View {
     @Binding var selectedTab: MainTab       // ⬅️ 여기!
-
+    
     @State private var title: String = ""
     @State private var content: String = ""
-
+    
     private var formattedDate: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy.MM.dd"
         return formatter.string(from: Date())
     }
-
+    
     var body: some View {
         ZStack {
             Image("background_5")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
-
+            
             VStack(spacing: 16) {
                 headerSection
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
-
+                
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         titleField
@@ -41,7 +41,7 @@ struct TrainingDiaryWriteView: View {
                     tagToolbar
                     Spacer()
                 }
-
+                
                 HStack {
                     Spacer()
                     Button("닫기") {
@@ -56,18 +56,18 @@ struct TrainingDiaryWriteView: View {
             .padding(.bottom, 8)
         }
     }
-
+    
     // MARK: - Subviews
-
+    
     private var headerSection: some View {
         HStack {
             Text(formattedDate)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
                 .lineLimit(1)
-
+            
             Spacer()
-
+            
             HStack(spacing: 16) {
                 headerIcon(name: "square.and.arrow.up")  // 공유
                 headerIcon(name: "eye")                 // 보기
@@ -75,7 +75,7 @@ struct TrainingDiaryWriteView: View {
             }
         }
     }
-
+    
     private func headerIcon(name: String) -> some View {
         Button(action: {}) {
             Image(systemName: name)
@@ -86,7 +86,7 @@ struct TrainingDiaryWriteView: View {
         }
         .buttonStyle(.plain)
     }
-
+    
     // 제목 필드
     private var titleField: some View {
         TextField(
@@ -101,7 +101,7 @@ struct TrainingDiaryWriteView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.clear)
     }
-
+    
     // 내용 필드
     private var contentField: some View {
         ZStack(alignment: .topLeading) {
@@ -111,7 +111,7 @@ struct TrainingDiaryWriteView: View {
                     .padding(.horizontal, 4)
                     .padding(.vertical, 8)
             }
-
+            
             TextEditor(text: $content)
                 .foregroundColor(.white)
                 .font(.body)
@@ -124,7 +124,7 @@ struct TrainingDiaryWriteView: View {
         .frame(height: 260)
         .background(Color.clear)
     }
-
+    
     // 태그/폴더/사람 아이콘
     private var tagToolbar: some View {
         VStack(spacing: 16) {
@@ -134,7 +134,7 @@ struct TrainingDiaryWriteView: View {
         }
         .foregroundStyle(.white)
     }
-
+    
     private func tagIcon(_ icon: String) -> some View {
         Button(action: {}) {
             Image(systemName: icon)
@@ -142,7 +142,10 @@ struct TrainingDiaryWriteView: View {
         }
         .buttonStyle(.plain)
     }
-
-#Preview {
-    TrainingDiaryWriteView(selectedTab: .constant(.write))
+    
+    // #Preview {
+    //  ###    TrainingDiaryWriteView(selectedTab: .constant(.analysis))
+    //}
+    
+    
 }
