@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct TrainingDiaryWriteView: View {
-    // 닫기 눌렀을 때 실행할 콜백 (MainHomeView에서 주입)
-    var onClose: (() -> Void)? = nil
+    @Binding var selectedTab: Tab
     
     @State private var title: String = ""
     @State private var content: String = ""
@@ -42,9 +41,21 @@ struct TrainingDiaryWriteView: View {
         }
         // 하단 왼쪽에 태그/폴더/사람 아이콘, 탭바 위에 고정
         .safeAreaInset(edge: .bottom) {
-            HStack {
-                tagToolbar   // ⬅️ 왼쪽
-                Spacer()
+            VStack(spacing: 16) {
+                HStack {
+                    tagToolbar   // ⬅️ 왼쪽
+                    Spacer()
+                }
+
+                HStack {
+                    Spacer()
+                    Button("닫기") {
+                        selectedTab = .note
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    Spacer()
+                }
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 8)

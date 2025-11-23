@@ -42,7 +42,6 @@ struct MainHomeView: View {
     }
     
     @State private var selectedTab: Tab = .analysis
-    @State private var lastNonWriteTab: Tab = .analysis
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -58,12 +57,7 @@ struct MainHomeView: View {
                 .tag(Tab.note)
             
             // 3) 작성 탭 → TrainingDiaryWriteView 를 직접 보여주는 방식
-            TrainingDiaryWriteView(
-                onClose: {
-                    selectedTab = .note
-                    lastNonWriteTab = .note
-                }
-            )
+            TrainingDiaryWriteView(selectedTab: $selectedTab)
             .tabItem {
                 // 🔹 아이콘 제거, 텍스트만
                 Text(selectedTab == .write ? "닫기" : "작성")
@@ -86,7 +80,6 @@ struct MainHomeView: View {
                 // 작성 탭 눌렀을 때 추가 토글 로직이 필요하면 여기서 더 다듬으면 됨
             } else {
                 // 작성 탭이 아닌 탭 선택 시, 마지막 탭 기록
-                lastNonWriteTab = newValue
             }
         }
     }
