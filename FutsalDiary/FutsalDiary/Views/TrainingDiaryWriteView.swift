@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct TrainingDiaryWriteView: View {
-    @Binding var selectedTab: Tab
-    
+    @Binding var selectedTab: MainTab       // ⬅️ 여기!
+
     @State private var title: String = ""
     @State private var content: String = ""
 
@@ -14,20 +14,16 @@ struct TrainingDiaryWriteView: View {
 
     var body: some View {
         ZStack {
-            // 배경
             Image("background_5")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            // 실제 내용
             VStack(spacing: 16) {
-                // 상단 헤더 고정
                 headerSection
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
 
-                // 본문은 스크롤
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
                         titleField
@@ -35,15 +31,14 @@ struct TrainingDiaryWriteView: View {
                     }
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
-                    .padding(.bottom, 80) // 아래 아이콘/탭바와 겹치지 않게
+                    .padding(.bottom, 120)
                 }
             }
         }
-        // 하단 왼쪽에 태그/폴더/사람 아이콘, 탭바 위에 고정
         .safeAreaInset(edge: .bottom) {
             VStack(spacing: 16) {
                 HStack {
-                    tagToolbar   // ⬅️ 왼쪽
+                    tagToolbar
                     Spacer()
                 }
 
@@ -61,6 +56,15 @@ struct TrainingDiaryWriteView: View {
             .padding(.bottom, 8)
         }
     }
+
+    // 아래 부분은 이전 버전 그대로 사용
+    // (headerSection, titleField, contentField, tagToolbar 등)
+    // ... 그대로 두면 됨
+}
+
+#Preview {
+    TrainingDiaryWriteView(selectedTab: .constant(.write))
+}
 
     // MARK: - Subviews
 
@@ -81,7 +85,6 @@ struct TrainingDiaryWriteView: View {
         }
     }
 
-
     private func headerIcon(name: String) -> some View {
         Button(action: {}) {
             Image(systemName: name)
@@ -93,7 +96,7 @@ struct TrainingDiaryWriteView: View {
         .buttonStyle(.plain)
     }
 
-    // 제목 필드: 배경 투명, 글자 흰색
+    // 제목 필드
     private var titleField: some View {
         TextField(
             "",
@@ -103,23 +106,23 @@ struct TrainingDiaryWriteView: View {
         .font(.headline)
         .padding(.horizontal, 4)
         .padding(.vertical, 4)
-        .foregroundStyle(Color.white)                   // 텍스트 흰색
+        .foregroundStyle(Color.white)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.clear)                        // 배경 완전 투명
+        .background(Color.clear)
     }
 
-    // 내용 필드: 배경 투명, 글자 흰색
+    // 내용 필드
     private var contentField: some View {
         ZStack(alignment: .topLeading) {
             if content.isEmpty {
                 Text("훈련 내용을 입력하세요...")
-                    .foregroundColor(.white.opacity(0.7)) // 흰색 계열 placeholder
+                    .foregroundColor(.white.opacity(0.7))
                     .padding(.horizontal, 4)
                     .padding(.vertical, 8)
             }
 
             TextEditor(text: $content)
-                .foregroundColor(.white)                // 입력 텍스트 흰색
+                .foregroundColor(.white)
                 .font(.body)
                 .padding(.horizontal, 0)
                 .padding(.vertical, 0)
@@ -128,10 +131,10 @@ struct TrainingDiaryWriteView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 260)
-        .background(Color.clear)                        // 배경 완전 투명
+        .background(Color.clear)
     }
 
-    // 태그/폴더/사람 아이콘: 배경 박스 제거, 아이콘만
+    // 태그/폴더/사람 아이콘
     private var tagToolbar: some View {
         VStack(spacing: 16) {
             tagIcon("tag")
@@ -151,5 +154,6 @@ struct TrainingDiaryWriteView: View {
 }
 
 #Preview {
-    MainHomeView()
+    // 미리보기용 더미 바인딩
+    TrainingDiaryWriteView(selectedTab: .constant(.write))
 }

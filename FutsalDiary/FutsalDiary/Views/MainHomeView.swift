@@ -1,22 +1,23 @@
 import SwiftUI
 import UIKit
 
-enum Tab: Hashable {
+// ✅ 전역 탭 enum 이름을 MainTab 으로 변경
+enum MainTab: Hashable {
     case analysis, note, write, feed, theme
 }
 
 struct MainHomeView: View {
-    
+
     init() {
         let appearance = UITabBarAppearance()
-        // 🔹 박스 배경 없애고 투명하게
+        // 탭 바 배경 투명
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = .clear
-        
-        // 🔹 탭 글자 폰트/색 설정 (조금 크게)
+
+        // 탭 글꼴/색
         let normalFont   = UIFont.systemFont(ofSize: 14, weight: .medium)
         let selectedFont = UIFont.systemFont(ofSize: 14, weight: .semibold)
-        
+
         let normalAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: UIColor.white.withAlphaComponent(0.8),
             .font: normalFont
@@ -25,109 +26,101 @@ struct MainHomeView: View {
             .foregroundColor: UIColor.white,
             .font: selectedFont
         ]
-        
+
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = normalAttributes
         appearance.stackedLayoutAppearance.selected.titleTextAttributes = selectedAttributes
         appearance.inlineLayoutAppearance = appearance.stackedLayoutAppearance
         appearance.compactInlineLayoutAppearance = appearance.stackedLayoutAppearance
-        
+
         UITabBar.appearance().standardAppearance = appearance
         if #available(iOS 15.0, *) {
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }
-        
+
         UITabBar.appearance().unselectedItemTintColor = UIColor.white.withAlphaComponent(0.8)
         UITabBar.appearance().isTranslucent = true
         UITabBar.appearance().backgroundColor = .clear
     }
-    
-    @State private var selectedTab: Tab = .analysis
-    
+
+    @State private var selectedTab: MainTab = .analysis
+
     var body: some View {
         TabView(selection: $selectedTab) {
-            
+
             // 1) 분석
             AnalysisHomeView()
                 .tabItem { Text("분석") }
-                .tag(Tab.analysis)
+                .tag(MainTab.analysis)
 
             // 2) 노트
             NoteTabView()
                 .tabItem { Text("노트") }
-                .tag(Tab.note)
-            
-            // 3) 작성 탭 → TrainingDiaryWriteView 를 직접 보여주는 방식
+                .tag(MainTab.note)
+
+            // 3) 작성
             TrainingDiaryWriteView(selectedTab: $selectedTab)
-            .tabItem {
-                // 🔹 아이콘 제거, 텍스트만
-                Text(selectedTab == .write ? "닫기" : "작성")
-            }
-            .tag(Tab.write)
-            
+                .tabItem {
+                    Text(selectedTab == .write ? "닫기" : "작성")
+                }
+                .tag(MainTab.write)
+
             // 4) 피드
             FeedView()
                 .tabItem { Text("피드") }
-                .tag(Tab.feed)
-            
+                .tag(MainTab.feed)
+
             // 5) 테마
             ThemeView()
                 .tabItem { Text("테마") }
-                .tag(Tab.theme)
+                .tag(MainTab.theme)
         }
         .tint(.white)
-        .onChange(of: selectedTab) { newValue in
-            if newValue == .write {
-                // 작성 탭 눌렀을 때 추가 토글 로직이 필요하면 여기서 더 다듬으면 됨
-            } else {
-                // 작성 탭이 아닌 탭 선택 시, 마지막 탭 기록
-            }
-        }
     }
-    
+
     // MARK: - 분석 탭 뷰
     private struct AnalysisHomeView: View {
         enum TabType { case schedule, diary }
-        
+
         private var tabTitle: (TabType) -> String = { tab in
             switch tab {
             case .schedule: return "일정 등록"
             case .diary: return "일지 작성"
             }
         }
-        
+
         @State private var selectedDate: Date = Date()
         @State private var selectedTab: TabType = .schedule
-        
+
         private let calendar: Calendar = {
             var calendar = Calendar.current
             calendar.locale = Locale(identifier: "en_US_POSIX")
             calendar.firstWeekday = 1 // Sunday
             return calendar
         }()
-        
+
         private var startOfMonth: Date {
             let components = calendar.dateComponents([.year, .month], from: Date())
             return calendar.date(from: components) ?? Date()
         }
-        
+
         private var numberOfDaysInMonth: Int {
             calendar.range(of: .day, in: .month, for: startOfMonth)?.count ?? 30
         }
-        
+
         private var weekdaySymbols: [String] { ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"] }
-        
+
         private struct Day: Identifiable {
             let id = UUID()
             let date: Date
             let isCurrentMonth: Bool
         }
-        
+
         private var daysInMonth: [Day] {
             let firstWeekday = calendar.component(.weekday, from: startOfMonth)
             let leadingEmptyDays = (firstWeekday - calendar.firstWeekday + 7) % 7
-            
+
             var days: [Day] = []
-            
+
             for offset in 0..<leadingEmptyDays {
                 if let placeholderDate = calendar.date(
                     byAdding: .day,
@@ -137,13 +130,13 @@ struct MainHomeView: View {
                     days.append(Day(date: placeholderDate, isCurrentMonth: false))
                 }
             }
-            
+
             for day in 1...numberOfDaysInMonth {
                 if let date = calendar.date(byAdding: .day, value: day - 1, to: startOfMonth) {
                     days.append(Day(date: date, isCurrentMonth: true))
                 }
             }
-            
+
             let remainder = days.count % 7
             if remainder != 0 {
                 let trailingDays = 7 - remainder
@@ -155,34 +148,34 @@ struct MainHomeView: View {
                     }
                 }
             }
-            
+
             return days
         }
-        
+
         private var workoutDates: [Date] {
             let sampleDays = [1, 3, 5, 10, 12, 14]
             return sampleDays.compactMap { day in
                 calendar.date(byAdding: .day, value: day - 1, to: startOfMonth)
             }
         }
-        
+
         private var diaryDates: [Date] {
             let sampleDays = [3, 7, 12]
             return sampleDays.compactMap { day in
                 calendar.date(byAdding: .day, value: day - 1, to: startOfMonth)
             }
         }
-        
+
         private var workoutCount: Int { workoutDates.count }
         private var diaryCount: Int { diaryDates.count }
         private var targetWorkoutDays: Int { 24 }
         private var remainingWorkoutDays: Int { max(targetWorkoutDays - workoutCount, 0) }
-        
+
         private var streakCount: Int {
             let today = calendar.startOfDay(for: Date())
             let sorted = workoutDates.map { calendar.startOfDay(for: $0) }.sorted(by: >)
             var currentStreak = 0
-            
+
             for date in sorted {
                 let expectedDate = calendar.date(byAdding: .day, value: -currentStreak, to: today)
                 if date == expectedDate {
@@ -191,17 +184,17 @@ struct MainHomeView: View {
                     break
                 }
             }
-            
+
             return currentStreak
         }
-        
+
         var body: some View {
             ZStack {
                 Image("background_6")
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 VStack(spacing: 18) {
                     calendarCard
                     tabSelector
@@ -212,7 +205,7 @@ struct MainHomeView: View {
                 .padding(.horizontal)
             }
         }
-        
+
         private var calendarCard: some View {
             VStack(spacing: 12) {
                 weekdayHeader
@@ -225,7 +218,7 @@ struct MainHomeView: View {
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 4)
         }
-        
+
         private var weekdayHeader: some View {
             HStack(spacing: 0) {
                 ForEach(weekdaySymbols, id: \.self) { symbol in
@@ -236,13 +229,13 @@ struct MainHomeView: View {
                 }
             }
         }
-        
+
         private var calendarGrid: some View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
                 ForEach(daysInMonth) { day in
                     let isSelected = calendar.isDate(day.date, inSameDayAs: selectedDate)
                     let textColor: Color = day.isCurrentMonth ? (isSelected ? .white : .black) : .gray.opacity(0.4)
-                    
+
                     Text("\(calendar.component(.day, from: day.date))")
                         .font(.system(size: 15))
                         .frame(width: 36, height: 36)
@@ -266,7 +259,7 @@ struct MainHomeView: View {
             }
             .padding(.horizontal, 4)
         }
-        
+
         private var tabSelector: some View {
             HStack(spacing: 0) {
                 tabButton(.schedule)
@@ -277,7 +270,7 @@ struct MainHomeView: View {
             .clipShape(Capsule())
             .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
         }
-        
+
         private func tabButton(_ tab: TabType) -> some View {
             Button {
                 selectedTab = tab
@@ -291,7 +284,7 @@ struct MainHomeView: View {
             }
             .buttonStyle(.plain)
         }
-        
+
         private var summaryBadges: some View {
             let badges: [(String, String)] = [
                 ("운동", "\(workoutCount)일"),
@@ -299,7 +292,7 @@ struct MainHomeView: View {
                 ("남은 일수", "\(remainingWorkoutDays)일"),
                 ("연속", "\(streakCount)일 연속")
             ]
-            
+
             return HStack(spacing: 12) {
                 ForEach(badges, id: \.0) { badge in
                     VStack(spacing: 4) {
@@ -326,23 +319,7 @@ struct MainHomeView: View {
             .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 4)
         }
     }
-    
-    private struct TacticsView: View {
-        var body: some View {
-            Text("노트 화면 (준비중)")
-                .font(.title3)
-                .foregroundColor(.gray)
-        }
-    }
-    
-    private struct WriteView: View {
-        var body: some View {
-            Text("작성 화면 (준비중)")
-                .font(.title3)
-                .foregroundColor(.gray)
-        }
-    }
-    
+
     private struct FeedView: View {
         var body: some View {
             Text("피드 화면 (준비중)")
@@ -350,7 +327,7 @@ struct MainHomeView: View {
                 .foregroundColor(.gray)
         }
     }
-    
+
     private struct ThemeView: View {
         var body: some View {
             Text("테마 화면 (준비중)")
