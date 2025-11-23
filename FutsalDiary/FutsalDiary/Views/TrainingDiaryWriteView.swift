@@ -57,15 +57,6 @@ struct TrainingDiaryWriteView: View {
         }
     }
 
-    // 아래 부분은 이전 버전 그대로 사용
-    // (headerSection, titleField, contentField, tagToolbar 등)
-    // ... 그대로 두면 됨
-}
-
-#Preview {
-    TrainingDiaryWriteView(selectedTab: .constant(.write))
-}
-
     // MARK: - Subviews
 
     private var headerSection: some View {
@@ -154,6 +145,5 @@ struct TrainingDiaryWriteView: View {
 }
 
 #Preview {
-    // 미리보기용 더미 바인딩
     TrainingDiaryWriteView(selectedTab: .constant(.write))
 }
